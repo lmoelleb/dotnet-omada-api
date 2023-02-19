@@ -17,10 +17,10 @@ using Xunit;
 public class ApiEndpointTests
 {
     private static readonly string TestFileContent = File.ReadAllText("Omada_SDN_Controller_V5.4.6 API Document.html");
-    private static readonly ApiDefinition omadaApiDefinition = new ApiDefinition(TestFileContent);
+    private static readonly ApiDefinition OmadaApiDefinition = new ApiDefinition(TestFileContent);
 
     private IEnumerable<ApiEndpoint> AllEndpoints =>
-        from section in omadaApiDefinition.Sections
+        from section in OmadaApiDefinition.Sections
         from endpoint in section.Endpoints
         select endpoint;
 
