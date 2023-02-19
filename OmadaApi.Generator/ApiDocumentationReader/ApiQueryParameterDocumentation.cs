@@ -1,19 +1,16 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
-public record ApiRequestHeader
+public record ApiQueryParameterDocumentation
 {
-    public ApiRequestHeader(string name, string value, bool isRequired, string example, string description)
+    public ApiQueryParameterDocumentation(string name, bool isRequired, string example, string description)
     {
         this.Name = name;
-        this.Value = value;
         this.IsRequired = isRequired;
         this.Example = example;
         this.Description = description;
     }
 
     public string Name { get; }
-
-    public string Value { get; }
 
     public bool IsRequired { get; }
 

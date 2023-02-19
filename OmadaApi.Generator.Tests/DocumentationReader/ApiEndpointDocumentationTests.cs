@@ -1,4 +1,4 @@
-﻿namespace OmadaApi.Generator.Tests;
+﻿namespace OmadaApi.Generator.Tests.DocumentationReader;
 
 using System;
 using System.Collections;
@@ -6,21 +6,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Principal;
 using FluentAssertions;
-using OmadaApi.Generator.Definition;
+using OmadaApi.Generator.ApiDocumentationReader;
 using Xunit;
 
 // Consider writing more specific tests that send nodes into the builder,
 // instead of loading the full document.
-public class ApiEndpointTests
+public class ApiEndpointDocumentationTests
 {
     private static readonly string TestFileContent = File.ReadAllText("Omada_SDN_Controller_V5.4.6 API Document.html");
-    private static readonly ApiDefinition OmadaApiDefinition = new ApiDefinition(TestFileContent);
+    private static readonly ApiDocumentation OmadaApiDocumentation = new ApiDocumentation(TestFileContent);
 
-    private IEnumerable<ApiEndpoint> AllEndpoints =>
-        from section in OmadaApiDefinition.Sections
+    private IEnumerable<ApiEndpointDocumentation> AllEndpoints =>
+        from section in OmadaApiDocumentation.Sections
         from endpoint in section.Endpoints
         select endpoint;
 
@@ -123,6 +121,6 @@ public class ApiEndpointTests
         body!.Properties.Should().Contain(p => p.Name == "errorCode" && p.IsRequired);
     }
 
-    private ApiEndpoint GetEndpoint(string title) =>
+    private ApiEndpointDocumentation GetEndpoint(string title) =>
                 this.AllEndpoints.SingleOrDefault(ep => ep.Title == title) ?? throw new ArgumentException($"Unable to find endpoint with title: {title}", nameof(title));
 }

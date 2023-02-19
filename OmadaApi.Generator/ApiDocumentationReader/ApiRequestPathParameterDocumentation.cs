@@ -1,8 +1,8 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
-public record ApiRequestPathParameter
+public record ApiRequestPathParameterDocumentation
 {
-    public ApiRequestPathParameter(string name, string example, string description)
+    public ApiRequestPathParameterDocumentation(string name, string example, string description)
     {
         this.Name = name;
         this.Example = example;

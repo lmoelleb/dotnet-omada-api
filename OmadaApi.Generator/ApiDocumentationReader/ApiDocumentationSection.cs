@@ -1,4 +1,4 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Xml;
 using HtmlAgilityPack;
 
-internal class ApiSection
+internal class ApiDocumentationSection
 {
-    private ApiSection(string title, IReadOnlyCollection<ApiEndpoint> endpoints)
+    private ApiDocumentationSection(string title, IReadOnlyCollection<ApiEndpointDocumentation> endpoints)
     {
         this.Title = title;
         this.Endpoints = endpoints;
@@ -17,9 +17,9 @@ internal class ApiSection
 
     public string Title { get; }
 
-    public IReadOnlyCollection<ApiEndpoint> Endpoints { get; }
+    public IReadOnlyCollection<ApiEndpointDocumentation> Endpoints { get; }
 
-    public static IReadOnlyCollection<ApiSection> Create(HtmlDocument htmlDocument)
+    public static IReadOnlyCollection<ApiDocumentationSection> Create(HtmlDocument htmlDocument)
     {
         List<Builder> builders = new List<Builder>();
 
@@ -47,7 +47,7 @@ internal class ApiSection
 
     internal class Builder
     {
-        private readonly List<ApiEndpoint.Builder> endpoints = new();
+        private readonly List<ApiEndpointDocumentation.Builder> endpoints = new();
         private string? endpointTitleCandidate;
 
         public Builder(string title)
@@ -62,8 +62,8 @@ internal class ApiSection
 
         public string Title { get; }
 
-        public ApiSection Build() =>
-            new ApiSection(
+        public ApiDocumentationSection Build() =>
+            new ApiDocumentationSection(
                 this.Title,
                 this.endpoints.Select(epb => epb.Build()).ToImmutableArray());
 
@@ -81,7 +81,7 @@ internal class ApiSection
                     throw new InvalidOperationException("Unable to create new endpoint as the title has not been set");
                 }
 
-                this.endpoints.Add(new ApiEndpoint.Builder(this.endpointTitleCandidate!));
+                this.endpoints.Add(new ApiEndpointDocumentation.Builder(this.endpointTitleCandidate!));
                 this.endpointTitleCandidate = null;
             }
 

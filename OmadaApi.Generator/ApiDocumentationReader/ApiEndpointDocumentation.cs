@@ -1,4 +1,4 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
 using System;
 using System.Collections.Generic;
@@ -12,23 +12,23 @@ using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-public class ApiEndpoint
+public class ApiEndpointDocumentation
 {
     private static readonly Regex IndentLevelRegex = new Regex(
         @"(^|;)\s*padding-left\s*:\s*(?'pixels'\d+)\s*px\s*(;|$)",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-    private ApiEndpoint(
+    private ApiEndpointDocumentation(
         string title,
         string path,
         HttpMethod httpMethod,
         string permissions,
-        IReadOnlyCollection<ApiErrorMessage> errorMessages,
-        IReadOnlyCollection<ApiRequestHeader> requestHeaders,
-        IReadOnlyCollection<ApiRequestPathParameter> requestPathParameters,
-        IReadOnlyCollection<ApiQueryParameter> queryParameters,
-        ApiObject? requestBody,
-        ApiObject? responseBody)
+        IReadOnlyCollection<ApiErrorMessageDocumentation> errorMessages,
+        IReadOnlyCollection<ApiRequestHeaderDocumentation> requestHeaders,
+        IReadOnlyCollection<ApiRequestPathParameterDocumentation> requestPathParameters,
+        IReadOnlyCollection<ApiQueryParameterDocumentation> queryParameters,
+        ApiObjectDocumentation? requestBody,
+        ApiObjectDocumentation? responseBody)
     {
         this.Title = title;
         this.Path = path;
@@ -50,17 +50,17 @@ public class ApiEndpoint
 
     public string Permissions { get; }
 
-    public IReadOnlyCollection<ApiRequestHeader> RequestHeaders { get; }
+    public IReadOnlyCollection<ApiRequestHeaderDocumentation> RequestHeaders { get; }
 
-    public IReadOnlyCollection<ApiRequestPathParameter> RequestPathParameters { get; }
+    public IReadOnlyCollection<ApiRequestPathParameterDocumentation> RequestPathParameters { get; }
 
-    public IReadOnlyCollection<ApiQueryParameter> RequestQueryParameters { get; }
+    public IReadOnlyCollection<ApiQueryParameterDocumentation> RequestQueryParameters { get; }
 
-    public ApiObject? RequestBody { get; }
+    public ApiObjectDocumentation? RequestBody { get; }
 
-    public ApiObject? ResponseBody { get; }
+    public ApiObjectDocumentation? ResponseBody { get; }
 
-    public IReadOnlyCollection<ApiErrorMessage> ErrorMessages { get; }
+    public IReadOnlyCollection<ApiErrorMessageDocumentation> ErrorMessages { get; }
 
     public class Builder
     {
@@ -68,12 +68,12 @@ public class ApiEndpoint
         private string path = string.Empty;
         private string method = string.Empty;
         private string permissions = string.Empty; // For now asume single string
-        private ImmutableArray<ApiErrorMessage> errorMessages = ImmutableArray<ApiErrorMessage>.Empty;
-        private ImmutableArray<ApiRequestHeader> requestHeaders = ImmutableArray<ApiRequestHeader>.Empty;
-        private ImmutableArray<ApiRequestPathParameter> requestPathParameters = ImmutableArray<ApiRequestPathParameter>.Empty;
-        private ImmutableArray<ApiQueryParameter> requestQueryParameters = ImmutableArray<ApiQueryParameter>.Empty;
-        private ApiObject? requestBody;
-        private ApiObject? responseBody;
+        private ImmutableArray<ApiErrorMessageDocumentation> errorMessages = ImmutableArray<ApiErrorMessageDocumentation>.Empty;
+        private ImmutableArray<ApiRequestHeaderDocumentation> requestHeaders = ImmutableArray<ApiRequestHeaderDocumentation>.Empty;
+        private ImmutableArray<ApiRequestPathParameterDocumentation> requestPathParameters = ImmutableArray<ApiRequestPathParameterDocumentation>.Empty;
+        private ImmutableArray<ApiQueryParameterDocumentation> requestQueryParameters = ImmutableArray<ApiQueryParameterDocumentation>.Empty;
+        private ApiObjectDocumentation? requestBody;
+        private ApiObjectDocumentation? responseBody;
         private string currentSubSection = string.Empty;
 
         public Builder(string title)
@@ -81,7 +81,7 @@ public class ApiEndpoint
             this.title = title.Trim();
         }
 
-        public ApiEndpoint Build()
+        public ApiEndpointDocumentation Build()
         {
             if (string.IsNullOrEmpty(this.path))
             {
@@ -93,7 +93,7 @@ public class ApiEndpoint
                 throw new InvalidOperationException($"Unable to build endpoint {this.title} as the {nameof(this.method)} has not been set.");
             }
 
-            return new ApiEndpoint(
+            return new ApiEndpointDocumentation(
                 this.title,
                 this.path,
                 new HttpMethod(this.method),
@@ -171,9 +171,9 @@ public class ApiEndpoint
             }
         }
 
-        private ApiObject? CreateApiObject(HtmlNode node)
+        private ApiObjectDocumentation? CreateApiObject(HtmlNode node)
         {
-            Stack<List<ApiObjectProperty>> workStack = new();
+            Stack<List<ApiObjectPropertyDocumentation>> workStack = new();
 
             var rows = node.SelectNodes("tbody/tr");
             if (!(rows?.Any() ?? false))
@@ -192,7 +192,7 @@ public class ApiEndpoint
                 string description = row.SelectSingleNode("td[5]").InnerText;
                 string other = row.SelectSingleNode("td[6]").InnerText;
                 int indentLevel = this.GetIndentLevel(row.SelectSingleNode("td[1]"));
-                ApiObject? childObject = null;
+                ApiObjectDocumentation? childObject = null;
 
                 name = name.TrimStart(' ', '├', '─');
 
@@ -207,7 +207,7 @@ public class ApiEndpoint
                     childObject = Pop();
                 }
 
-                workStack.Peek().Add(new ApiObjectProperty(
+                workStack.Peek().Add(new ApiObjectPropertyDocumentation(
                     name,
                     type,
                     isRequired,
@@ -225,11 +225,11 @@ public class ApiEndpoint
 
             return result;
 
-            ApiObject Pop()
+            ApiObjectDocumentation Pop()
             {
                 var childProperties = workStack.Pop();
                 childProperties.Reverse(); // As it is a list, the items are reversed in the list instance (unlike Linq Reverse)
-                return new ApiObject(childProperties.ToImmutableArray());
+                return new ApiObjectDocumentation(childProperties.ToImmutableArray());
             }
         }
 
@@ -256,7 +256,7 @@ public class ApiEndpoint
             }
 
             this.requestQueryParameters = node.SelectNodes("tbody/tr").Select(row =>
-                new ApiQueryParameter(
+                new ApiQueryParameterDocumentation(
                         row.SelectSingleNode("td[1]").InnerText,
                         "yes".Equals(row.SelectSingleNode("td[2]").InnerText.Trim(), StringComparison.OrdinalIgnoreCase),
                         row.SelectSingleNode("td[3]").InnerText,
@@ -271,7 +271,7 @@ public class ApiEndpoint
             }
 
             this.requestPathParameters = node.SelectNodes("tbody/tr").Select(row =>
-                new ApiRequestPathParameter(
+                new ApiRequestPathParameterDocumentation(
                         row.SelectSingleNode("td[1]").InnerText,
                         row.SelectSingleNode("td[2]").InnerText,
                         row.SelectSingleNode("td[3]").InnerText)).ToImmutableArray();
@@ -285,7 +285,7 @@ public class ApiEndpoint
             }
 
             this.requestHeaders = node.SelectNodes("tbody/tr").Select(row =>
-                new ApiRequestHeader(
+                new ApiRequestHeaderDocumentation(
                         row.SelectSingleNode("td[1]").InnerText,
                         row.SelectSingleNode("td[2]").InnerText,
                         "yes".Equals(row.SelectSingleNode("td[3]").InnerText, StringComparison.OrdinalIgnoreCase),
@@ -306,7 +306,7 @@ public class ApiEndpoint
                                   where !string.IsNullOrWhiteSpace(codeText)
                                   let code = int.Parse(codeText.Trim())
                                   let message = row.SelectSingleNode("td[2]").InnerText
-                                  select new ApiErrorMessage(code, message)).ToImmutableArray();
+                                  select new ApiErrorMessageDocumentation(code, message)).ToImmutableArray();
         }
 
         private void ProcessPermissionTable(HtmlNode node)

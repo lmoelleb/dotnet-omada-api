@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using global::OmadaApi.Generator.Definition;
+using global::OmadaApi.Generator.ApiDocumentationReader;
 using Microsoft.CodeAnalysis;
 
 [Generator(LanguageNames.CSharp)]
@@ -13,23 +13,25 @@ public class SourceGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<AdditionalText> apiDefinitions = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith(".html"));
+        IncrementalValuesProvider<AdditionalText> apiDocuments = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith(".html"));
 
-        IncrementalValuesProvider<string> apiDocumentations = apiDefinitions.Select((text, cancellationToken) => text.GetText(cancellationToken)!.ToString());
+        IncrementalValuesProvider<string> apiDocumentations = apiDocuments.Select((text, cancellationToken) => text.GetText(cancellationToken)!.ToString());
 
-        context.RegisterSourceOutput(apiDocumentations, (spc, apiDocumentation) =>
+        var generate = (Action<SourceProductionContext, string>)((spc, apiDocumentation) =>
         {
-            ApiDefinition apiDefinition = new ApiDefinition(apiDocumentation);
+            ApiDocumentation apiDoc = new(apiDocumentation);
 
-            string source = this.GenerateSource(apiDefinition);
-            spc.AddSource($"Bevenel.OmadaApi.V{apiDefinition.Version}", source);
+            string source = this.GenerateSource(apiDoc);
+            spc.AddSource($"Bevenel.OmadaApi.V{apiDoc.Version}", source);
         });
+
+        context.RegisterSourceOutput(apiDocumentations, generate);
     }
 
-    private string GenerateSource(ApiDefinition apiDefinition)
+    private string GenerateSource(ApiDocumentation apiDocumentation)
     {
         return $"""
-                namespace Bevenel.OmadaApi.V{apiDefinition.Version};
+                namespace Bevenel.OmadaApi.V{apiDocumentation.Version};
                 """;
     }
 }

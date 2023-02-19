@@ -1,15 +1,15 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
-public record ApiObjectProperty
+public record ApiObjectPropertyDocumentation
 {
-    public ApiObjectProperty(
+    public ApiObjectPropertyDocumentation(
         string name,
         string type,
         bool isRequired,
         string @default,
         string description,
         string other,
-        ApiObject? complexType)
+        ApiObjectDocumentation? complexType)
     {
         this.Name = name;
         this.Type = type;
@@ -39,5 +39,5 @@ public record ApiObjectProperty
     public bool IsArray => this.Type.EndsWith("]");
 
     // Could have subtyped.... might still :D
-    public ApiObject? ComplexType { get; }
+    public ApiObjectDocumentation? ComplexType { get; }
 }

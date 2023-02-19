@@ -1,12 +1,12 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-public record ApiErrorMessage
+public record ApiErrorMessageDocumentation
 {
-    public ApiErrorMessage(int errorCode, string errorDescription)
+    public ApiErrorMessageDocumentation(int errorCode, string errorDescription)
     {
         this.ErrorCode = errorCode;
         this.ErrorDescription = errorDescription;

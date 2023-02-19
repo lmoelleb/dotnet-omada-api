@@ -1,4 +1,4 @@
-﻿namespace OmadaApi.Generator.Definition;
+﻿namespace OmadaApi.Generator.ApiDocumentationReader;
 
 using System;
 using System.Collections.Generic;
@@ -12,28 +12,28 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-internal class ApiDefinition
+internal class ApiDocumentation
 {
     private readonly Lazy<HtmlDocument> doc;
     private readonly Lazy<string> version;
-    private readonly Lazy<IReadOnlyCollection<ApiSection>> sections;
+    private readonly Lazy<IReadOnlyCollection<ApiDocumentationSection>> sections;
 
-    public ApiDefinition(string htmlDefinition)
+    public ApiDocumentation(string htmlDocumentation)
     {
         this.doc = new Lazy<HtmlDocument>(() =>
         {
             var d = new HtmlDocument();
-            d.LoadHtml(htmlDefinition);
+            d.LoadHtml(htmlDocumentation);
             return d;
         });
 
         this.version = new Lazy<string>(this.ExtractVersion);
-        this.sections = new Lazy<IReadOnlyCollection<ApiSection>>(() => ApiSection.Create(this.doc.Value));
+        this.sections = new Lazy<IReadOnlyCollection<ApiDocumentationSection>>(() => ApiDocumentationSection.Create(this.doc.Value));
     }
 
     public string Version => this.version.Value;
 
-    public IReadOnlyCollection<ApiSection> Sections => this.sections.Value;
+    public IReadOnlyCollection<ApiDocumentationSection> Sections => this.sections.Value;
 
     private string ExtractVersion()
     {
