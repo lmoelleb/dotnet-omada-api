@@ -1,11 +1,4 @@
 ﻿namespace OmadaApi.Implementation;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 /// <summary>
 ///     Represents a JSON response from the Omada API.
 /// </summary>

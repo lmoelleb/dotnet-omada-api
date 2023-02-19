@@ -6,11 +6,8 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 public class ApiEndpointDocumentation
 {

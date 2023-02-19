@@ -1,11 +1,5 @@
 ﻿namespace OmadaApi.Implementation;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 /// <inheritdoc/>
 internal class AuthenticatedOmadaController : OmadaController, IAuthenticatedOmadaController
 {

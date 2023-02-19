@@ -1,7 +1,6 @@
 namespace OmadaApi.Generator.Tests.DocumentationReader;
 
 using System.IO;
-using System.Linq;
 using FluentAssertions;
 using OmadaApi.Generator.ApiDocumentationReader;
 using Xunit;

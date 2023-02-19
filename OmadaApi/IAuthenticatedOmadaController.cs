@@ -1,11 +1,5 @@
 ﻿namespace OmadaApi;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 /// <summary>
 ///     Represents an Omada Controller API that has been authenticated by calling
 ///     <see cref="IUnauthenticatedOmadaController.WithCredentials(string, string)"/>

@@ -1,8 +1,6 @@
 ﻿namespace OmadaApi.Generator.ApiDocumentationReader
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     public record ApiObjectDocumentation
     {

@@ -1,9 +1,5 @@
 ﻿namespace OmadaApi.Implementation
 {
-    using System;
-    using System.Threading.Tasks;
-    using Microsoft.Extensions.Logging;
-
     /// <inheritdoc />
     internal class UnauthenticatedOmadaController : OmadaController, IUnauthenticatedOmadaController
     {
