@@ -15,11 +15,13 @@ public class PathTokenizerTests
     [Theory]
     [InlineData("/api/v2/something", "Must include controller ID path parameter.")]
     [InlineData("/{omadacId}/v2/something", "Must include /api/.")]
-    [InlineData("/{omadacId}/api/something", "Must include API version")]
+    [InlineData("/{omadacId}/api/something", "Must include API version.")]
+    [InlineData("/{omadacId}/api/v2/{parameter}", "Can't start with a path parameter.")]
+    [InlineData("/{omadacId}/api/v2/something/{parameter}/{parameter}/something", "Can't have two parameters right after each other.")]
     public void ThrowsIfInvalidPrefix(string prefix, string because)
     {
         var tokenizer = new PathTokenizer();
-        tokenizer.Invoking(t => t.GetTokens(prefix)).Should().Throw<ArgumentException>(because);
+        tokenizer.Invoking(t => t.GetTokens(prefix)).Should().Throw<NotSupportedException>(because);
     }
 
     [Theory]

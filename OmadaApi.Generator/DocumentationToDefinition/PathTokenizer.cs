@@ -16,7 +16,7 @@ internal class PathTokenizer
         var m = SkipApiVersionRegex.Match(path);
         if (!m.Success)
         {
-            throw new ArgumentException("Expected a path on the form '{ctrlId}/api/vX/...' where X is an integer, got: " + path, nameof(path));
+            throw new NotSupportedException("Expected a path on the form '{ctrlId}/api/vX/...' where X is an integer, got: " + path);
         }
 
         List<PathToken> pathTokens = new List<PathToken>();
@@ -31,7 +31,18 @@ internal class PathTokenizer
         foreach (var part in parts)
         {
             var split = part.Split('•');
-            pathTokens.Add(new PathToken(split.First(), split.Skip(1).FirstOrDefault()));
+            string name = split[0];
+            if (name.StartsWith("{"))
+            {
+                throw new NotSupportedException("Path can't start with a parameter, got: " + path);
+            }
+
+            if (split.Length > 2)
+            {
+                throw new NotSupportedException("Path can't have two parameter right after each other, got: " + path);
+            }
+
+            pathTokens.Add(new PathToken(name, split.Skip(1).FirstOrDefault()));
         }
 
         return pathTokens.ToImmutableArray();
