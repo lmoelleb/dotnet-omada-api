@@ -1,10 +1,8 @@
 ﻿namespace OmadaApi.Generator.Tests.DocumentationToDefinition;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using OmadaApi.Generator.DocumentationToDefinition;
 using Xunit;
 

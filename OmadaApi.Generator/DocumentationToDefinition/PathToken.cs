@@ -1,8 +1,4 @@
 ﻿namespace OmadaApi.Generator.DocumentationToDefinition;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 internal record PathToken
 {
     public PathToken(string name, string? parameterName)
