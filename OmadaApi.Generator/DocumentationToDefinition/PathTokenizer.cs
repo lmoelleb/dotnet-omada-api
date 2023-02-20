@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 internal class PathTokenizer
 {
-    private static readonly Regex SkipApiVersionRegex = new Regex(@"^/\{[^\}]+\}/api/v\d+/(?'rest'.+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex SkipApiVersionRegex = new Regex(@"^/\{[^\}/]+\}/api/v\d+/(?'rest'.+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public IReadOnlyList<PathToken> GetTokens(string path)
     {
@@ -24,7 +24,7 @@ internal class PathTokenizer
 
         // The goal is to detect any place where a path parimeter selects a specific entity.
         // For example: /something/sites/{whatever}/ have sites/{whatever} mapped to a single token
-        // We misued the fact that we know the path is ASCII and replace /{ with a placeholder
+        // We misue the fact that we know the path is ASCII and replace /{ with a placeholder
         // Could be done with regex or loops, but this is probably simpler
         var parts = relevantPartOfPath.Replace("/{", "•{").Split('/');
         foreach (var part in parts)
