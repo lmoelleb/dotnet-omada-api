@@ -1,0 +1,27 @@
+EmployeeXmlPaths:Root
+	\\247tailorsteel.local\vv\Prod\TS.Prod\Import\HumanResources
+
+FileStorageBasePathJobs:
+	\\247tailorsteel.local\productiondata\Jobs
+
+FileStorageBasePathSalesOrders:
+	\\247tailorsteel.local\productiondata\SalesOrders
+
+SalesOrderPaths:BaseDirectory
+	\\247tailorsteel.local\vv\#{short-environment}\TS.Prod\TS.ROU\SalesOrder\
+SalesOrderPaths:ErrorDirectory
+	\\247tailorsteel.local\vv\#{short-environment}\TS.Prod\TS.ROU\SalesOrder\Error
+SalesOrderPaths:SaveDirectory
+	\\247tailorsteel.local\vv\#{short-environment}\TS.Prod\TS.ROU\SalesOrder\Save
+
+SalesStatusXmlDirectories
+	VV=\\247tailorsteel.local\am\dev\NAV\VV\Import\SALESSTATUS;HB=\\247tailorsteel.local\am\dev\NAV\OY\Import\SALESSTATUS;HI=\\247tailorsteel.local\am\dev\NAV\HI\Import\SALESSTATUS
+
+TubeSalesStatusXmlDirectory
+	\\247tailorsteel.local\am\Prod\NAV\TU\Import\SALESSTATUS
+
+TubeUsageXmlDirectory
+	\\247tailorsteel.local\am\Prod\NAV\TU\Import\USAGE
+
+UsageXmlDirectories
+	VV=\\pm-server\data\Productie\Database\Exchange\Export;HB=\\pm-server\data\Tailorsteel Bremen\Database\Exchange\Export;HI=\\247tailorsteel.local\am\Prod\NAV\HI\Import\USAGE

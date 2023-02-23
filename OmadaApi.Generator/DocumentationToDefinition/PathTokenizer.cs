@@ -6,9 +6,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-internal class PathTokenizer
+internal class PathTokenizer : IPathTokenizer
 {
-    private static readonly Regex SkipApiVersionRegex = new Regex(@"^/\{[^\}/]+\}/api/v\d+/(?'rest'.+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex SkipApiVersionRegex = new(@"^/\{[^\}/]+\}/api/v\d+/(?'rest'.+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public IReadOnlyList<PathToken> GetTokens(string path)
     {
@@ -44,6 +44,6 @@ internal class PathTokenizer
             pathTokens.Add(new PathToken(name, split.Skip(1).FirstOrDefault()));
         }
 
-        return pathTokens.ToImmutableArray();
+        return pathTokens.ToImmutableList();
     }
 }

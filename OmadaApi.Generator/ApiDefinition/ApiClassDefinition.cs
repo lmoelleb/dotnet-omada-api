@@ -10,7 +10,7 @@ internal class ApiClassDefinition
 
     public string Name { get; }
 
-    public IList<ApiClassDefinition> ClassProperties { get; } = new List<ApiClassDefinition>();
+    public IList<ApiTransitionalClassProperty> ClassProperties { get; } = new List<ApiTransitionalClassProperty>();
 
-    public IList<(ApiClassDefinition ClassDefinition, string ParameterName)> ClassMethods { get; } = new List<(ApiClassDefinition, string)>();
+    public IList<ApiTransitionalPathMethod> ClassMethods { get; } = new List<ApiTransitionalPathMethod>();
 }
